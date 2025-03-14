@@ -12,7 +12,7 @@ import java.util.Scanner;
              String result = calc(input);
              System.out.println("Результат " + result);
          }catch (Exception e){
-             System.out.println("Error "+ e.getMessage());
+             System.out.println("Ошибка "+ e.getMessage());
          }
 
 //не пойму , как на этом гитхабе что то делать
@@ -40,22 +40,21 @@ import java.util.Scanner;
 
             }
             int a, b;
-            //сюда надо проверку на совпадение с римскими цифрами и перевод римских в арабские
+
             if (isRomanOne){
              a= romanToInt(one);
              b=romanToInt(two);
-             if (a < 1 || a > 10 || b < 1 || b > 10){
-                 throw new IllegalArgumentException(" Цифры от 1 до 10");
+             if (a < 1 || b < 1 ){
+                 throw new IllegalArgumentException(" Римские цифры должны быть от 1 до 10 включительно");
              }
+            }else {
+                a = Integer.parseInt(one);
+                b = Integer.parseInt(two);
+                if (a < 1 || a > 10 || b < 1 || b > 10) {
+                    throw new IllegalArgumentException("Числа должны быть от 1 до 10");
+                }
             }
 
-
-            a = Integer.parseInt(one);
-            b = Integer.parseInt(two);
-            if (a < 1 || a > 10 || b < 1 || b > 10) {
-                throw new IllegalArgumentException("Числа должны быть от 1 до 10");
-
-            }
             int result;
             switch (oper) {
                 case "+":
@@ -76,12 +75,20 @@ import java.util.Scanner;
                 default:
                     throw new IllegalArgumentException("Неверный оператор:" + oper);
             }
-
-         return Integer.toString(result);
+         if (isRomanOne) {
+             if (result < 1) {
+                 throw new IllegalArgumentException("Результат римского числа не может быть меньше единицы.");
+             }
+             return int_toRoman(result);
+         } else {
+             return Integer.toString(result);
+         }
      }
         static boolean isRoman(String str) {
             return str.matches("[IVX]+");
         }
+
+
         static int romanToInt(String s){
             int total = 0;
             int prevValue = 0;
@@ -108,6 +115,20 @@ import java.util.Scanner;
               case 'C':return  100;
               default: throw new IllegalArgumentException("Неккоретный ввод: " + ch);
           }
+        }
+        static String int_toRoman(int num){
+         StringBuilder result=new StringBuilder();
+         int [] values={100,90,50,40,10,9,5,4,1};
+         String[] symRoman={"C","XC","L","XL","X","IX","V","IV","I"};
+
+         for (int i=0;i<values.length;i++){
+             while (num >= values[i]) {
+                 result.append(symRoman[i]);
+                 num -= values[i];
+             }
+
+         }
+         return result.toString();
         }
 
 
